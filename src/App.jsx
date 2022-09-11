@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useDropzone } from "react-dropzone";
 
 const thumbsContainer = {
@@ -68,6 +69,8 @@ const outputStyle = {
 
 function Previews(props) {
   const [files, setFiles] = useState([]);
+  const [image, setImage] = useState();
+
   const {
     getRootProps,
     getInputProps,
@@ -113,6 +116,22 @@ function Previews(props) {
     [files]
   );
 
+  const onClick = async event => {
+    event.preventDefault()
+
+    const formData = new FormData()
+    formData.append("image", files)
+    
+
+    const result = await axios.post(
+      `http://localhost:5000/api/upload`, 
+      formData, { 
+        headers: {'Content-Type': 'multipart/form-data'}
+      }
+    )
+    setImage(result.data.imagePath)
+  }
+
   return (
     <section className="container">
       <div {...getRootProps({ className: "dropzone", style })}>
@@ -127,16 +146,13 @@ function Previews(props) {
       <div style={outputStyle}>
         <h3>Before</h3>
         <aside style={thumbsContainer}>{thumbs}</aside>
+        <button onClick={onClick}>Submit</button>
 
         <div>
           <h3>After</h3>
-          <aside style={thumbsContainer}>{thumbs}</aside>
+          <aside style={thumbsContainer}>{image}</aside>
         </div>
       </div>
-      
-      
-      
-      
     </section>
   );
 }
