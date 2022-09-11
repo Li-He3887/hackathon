@@ -119,17 +119,17 @@ function Previews(props) {
   const onClick = async event => {
     event.preventDefault()
 
-    const formData = new FormData()
-    formData.append("image", files)
+    const bodyFormData = new FormData()
+    bodyFormData.append("images", files)
     
-
-    const result = await axios.post(
-      `http://localhost:5000/api/upload`, 
-      formData, { 
-        headers: {'Content-Type': 'multipart/form-data'}
-      }
-    )
-    setImage(result.data.imagePath)
+    const test = await axios({
+      method: "post",
+      url: `http://localhost:5000/api/upload`,
+      data: bodyFormData,
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    setImage(test.images)
+    console.log(test)
   }
 
   return (
